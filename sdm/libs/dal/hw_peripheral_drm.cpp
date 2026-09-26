@@ -902,7 +902,11 @@ DisplayError HWPeripheralDRM::PowerOff(bool teardown, SyncPoints *sync_points) {
     }
   }
 
-  // QSync mode needs to be reset on device suspend and re-enabled on resume.
+  // AVR step requires QSync, so disable both in the same atomic commit.
+  if (connector_info_.modes[current_mode_index_].avr_step_fps) {
+    drm_atomic_intf_->Perform(DRMOps::CONNECTOR_SET_AVR_STEP_STATE, token_.conn_id,
+                              sde_drm::DRMAvrStepState::DISABLE);
+  }
   drm_atomic_intf_->Perform(DRMOps::CONNECTOR_SET_QSYNC_MODE, token_.conn_id,
                             sde_drm::DRMQsyncMode::NONE);
   ConfigureLoopbackCAC(false /* cac enabled */);

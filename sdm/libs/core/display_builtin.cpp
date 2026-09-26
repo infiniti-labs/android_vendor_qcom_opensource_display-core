@@ -1804,6 +1804,10 @@ DisplayError DisplayBuiltIn::SetDisplayState(DisplayState state, bool teardown,
     if (qsync_mode_ != kQSyncModeNone) {
       needs_avr_update_.set(kUpdateAVRModeFlag);
     }
+    if (avr_step_enabled_) {
+      needs_avr_update_.set(kUpdateAVRStepFlag);
+      needs_avr_update_.set(kUpdateAVRStepFpsFlag);
+    }
   }
 
   if (pending_power_state_ != kPowerStateNone) {
